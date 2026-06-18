@@ -1,0 +1,250 @@
+@model PatientDetailsViewModel
+@{
+    ViewData["Title"] = Model.Patient.FullName;
+    var p = Model.Patient;
+}
+
+<!-- Header -->
+<div class="d-flex justify-content-between align-items-start mb-4">
+    <div class="d-flex align-items-center">
+        <a asp-action="Index" class="btn btn-outline-secondary me-3">
+            <i class="bi bi-arrow-left"></i>
+        </a>
+        <div>
+            <h4 class="fw-bold mb-0">@p.FullName</h4>
+            <span class="badge bg-primary me-1">@p.PatientCode</span>
+            <span class="badge bg-light text-dark border">@p.Gender</span>
+            @if (!string.IsNullOrEmpty(p.BloodGroup))
+            {
+                <span class="badge bg-danger ms-1">@p.BloodGroup</span>
+            }
+        </div>
+    </div>
+    @if (User.IsInRole("Admin") || User.IsInRole("Doctor") || User.IsInRole("Receptionist"))
+    {
+        <a asp-action="Edit" asp-route-id="@p.Id" class="btn btn-outline-primary">
+            <i class="bi bi-pencil me-2"></i>Edit
+        </a>
+    }
+</div>
+
+<div class="row g-4">
+    <!-- Left: Patient Info -->
+    <div class="col-lg-4">
+        <div class="card shadow-sm mb-4">
+            <div class="card-header fw-semibold">
+                <i class="bi bi-person me-2"></i>Patient Details
+            </div>
+            <div class="card-body">
+                <dl class="row mb-0 small">
+                    <dt class="col-5 text-muted">Full Name</dt>
+                    <dd class="col-7 fw-semibold">@p.FullName</dd>
+
+                    <dt class="col-5 text-muted">Date of Birth</dt>
+                    <dd class="col-7">@p.DateOfBirth.ToString("dd MMM yyyy") <span class="text-muted">(@p.Age yrs)</span></dd>
+
+                    <dt class="col-5 text-muted">Gender</dt>
+                    <dd class="col-7">@p.Gender</dd>
+
+                    <dt class="col-5 text-muted">Blood Group</dt>
+                    <dd class="col-7">@(p.BloodGroup ?? "—")</dd>
+
+                    <dt class="col-5 text-muted">Phone</dt>
+                    <dd class="col-7">@p.PhoneNumber</dd>
+
+                    <dt class="col-5 text-muted">Email</dt>
+                    <dd class="col-7">@(p.Email ?? "—")</dd>
+
+                    <dt class="col-5 text-muted">City</dt>
+                    <dd class="col-7">@(p.City ?? "—")</dd>
+
+                    <dt class="col-5 text-muted">Address</dt>
+                    <dd class="col-7">@(p.Address ?? "—")</dd>
+
+                    @if (!string.IsNullOrEmpty(p.Allergies))
+                    {
+                        <dt class="col-5 text-muted">Allergies</dt>
+                        <dd class="col-7 text-danger fw-semibold">@p.Allergies</dd>
+                    }
+
+                    @if (!string.IsNullOrEmpty(p.Notes))
+                    {
+                        <dt class="col-5 text-muted">Notes</dt>
+                        <dd class="col-7">@p.Notes</dd>
+                    }
+
+                    <dt class="col-5 text-muted">Registered</dt>
+                    <dd class="col-7">@p.CreatedAt.ToString("dd MMM yyyy")</dd>
+                </dl>
+            </div>
+        </div>
+    </div>
+
+    <!-- Right: Medical History -->
+    <div class="col-lg-8">
+
+        <!-- Add History Form (Doctor / Nurse / Admin) -->
+        @if (User.IsInRole("Admin") || User.IsInRole("Doctor") || User.IsInRole("Nurse"))
+        {
+            <div class="card shadow-sm mb-4">
+                <div class="card-header fw-semibold" role="button"
+                     data-bs-toggle="collapse" data-bs-target="#addHistoryForm">
+                    <i class="bi bi-plus-circle me-2"></i>Add Medical History Record
+                    <i class="bi bi-chevron-down float-end"></i>
+                </div>
+                <div class="collapse" id="addHistoryForm">
+                    <div class="card-body">
+                        <form asp-action="AddMedicalHistory" method="post">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="PatientId" value="@p.Id" />
+                            <div asp-validation-summary="ModelOnly" class="alert alert-danger small"></div>
+
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold">Diagnosis <span class="text-danger">*</span></label>
+                                    <input name="Diagnosis" class="form-control" required />
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label fw-semibold">Visit Date <span class="text-danger">*</span></label>
+                                    <input name="VisitDate" class="form-control" type="date"
+                                           value="@DateTime.Today.ToString("yyyy-MM-dd")" required />
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label fw-semibold">Visit Type</label>
+                                    <select name="VisitType" class="form-select">
+                                        @foreach (var vt in Enum.GetValues<HealthcareCRM.Models.VisitType>())
+                                        {
+                                            <option value="@vt">@vt</option>
+                                        }
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold">Treating Doctor</label>
+                                    <input name="TreatingDoctor" class="form-control" />
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold">Medications</label>
+                                    <input name="Medications" class="form-control" />
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label fw-semibold">Description</label>
+                                    <textarea name="Description" class="form-control" rows="2"></textarea>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold">Lab Results</label>
+                                    <input name="LabResults" class="form-control" />
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label fw-semibold">Procedure</label>
+                                    <input name="Procedure" class="form-control" />
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label fw-semibold">Follow-up Date</label>
+                                    <input name="FollowUpDate" class="form-control" type="date" />
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label fw-semibold">Follow-up Notes</label>
+                                    <textarea name="FollowUpNotes" class="form-control" rows="2"></textarea>
+                                </div>
+                            </div>
+
+                            <div class="mt-3">
+                                <button type="submit" class="btn btn-success">
+                                    <i class="bi bi-plus-circle me-2"></i>Add Record
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        }
+
+        <!-- Medical History Table -->
+        <div class="card shadow-sm">
+            <div class="card-header fw-semibold d-flex justify-content-between">
+                <span><i class="bi bi-clipboard2-pulse me-2"></i>Medical History</span>
+                <span class="badge bg-secondary">@Model.MedicalHistory.Count records</span>
+            </div>
+            <div class="card-body p-0">
+                @if (!Model.MedicalHistory.Any())
+                {
+                    <div class="text-center py-4 text-muted">
+                        <i class="bi bi-clipboard2 fs-3"></i>
+                        <p class="mt-2 mb-0">No medical history recorded yet.</p>
+                    </div>
+                }
+                else
+                {
+                    <div class="table-responsive">
+                        <table class="table table-sm table-hover mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Type</th>
+                                    <th>Diagnosis</th>
+                                    <th>Doctor</th>
+                                    <th>Medications</th>
+                                    <th>Follow-up</th>
+                                    @if (User.IsInRole("Admin") || User.IsInRole("Doctor"))
+                                    {
+                                        <th></th>
+                                    }
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var h in Model.MedicalHistory)
+                                {
+                                    <tr>
+                                        <td class="text-nowrap small">@h.VisitDate.ToString("dd MMM yyyy")</td>
+                                        <td>
+                                            <span class="badge @GetVisitBadge(h.VisitType)">@h.VisitType</span>
+                                        </td>
+                                        <td>
+                                            <span class="fw-semibold">@h.Diagnosis</span>
+                                            @if (!string.IsNullOrEmpty(h.Description))
+                                            {
+                                                <br /><small class="text-muted">@h.Description</small>
+                                            }
+                                        </td>
+                                        <td class="small">@(h.TreatingDoctor ?? "—")</td>
+                                        <td class="small">@(h.Medications ?? "—")</td>
+                                        <td class="small text-nowrap">
+                                            @(h.FollowUpDate.HasValue ? h.FollowUpDate.Value.ToString("dd MMM yyyy") : "—")
+                                        </td>
+                                        @if (User.IsInRole("Admin") || User.IsInRole("Doctor"))
+                                        {
+                                            <td>
+                                                <form asp-action="DeleteMedicalHistory" method="post" class="d-inline">
+                                                    @Html.AntiForgeryToken()
+                                                    <input type="hidden" name="historyId" value="@h.Id" />
+                                                    <input type="hidden" name="patientId" value="@p.Id" />
+                                                    <button type="submit" class="btn btn-sm btn-outline-danger"
+                                                            onclick="return confirm('Delete this record?')">
+                                                        <i class="bi bi-trash"></i>
+                                                    </button>
+                                                </form>
+                                            </td>
+                                        }
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+            </div>
+        </div>
+
+    </div>
+</div>
+
+@functions {
+    string GetVisitBadge(HealthcareCRM.Models.VisitType vt) => vt switch {
+        HealthcareCRM.Models.VisitType.Emergency    => "bg-danger",
+        HealthcareCRM.Models.VisitType.Consultation => "bg-primary",
+        HealthcareCRM.Models.VisitType.FollowUp     => "bg-info text-dark",
+        HealthcareCRM.Models.VisitType.Procedure    => "bg-warning text-dark",
+        HealthcareCRM.Models.VisitType.LabTest      => "bg-secondary",
+        HealthcareCRM.Models.VisitType.Vaccination  => "bg-success",
+        _ => "bg-secondary"
+    };
+}

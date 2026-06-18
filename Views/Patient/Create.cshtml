@@ -1,0 +1,111 @@
+@model PatientCreateViewModel
+@{
+    ViewData["Title"] = "New Patient";
+}
+
+<div class="d-flex align-items-center mb-4">
+    <a asp-action="Index" class="btn btn-outline-secondary me-3">
+        <i class="bi bi-arrow-left"></i>
+    </a>
+    <h4 class="fw-bold mb-0"><i class="bi bi-person-plus me-2"></i>Register New Patient</h4>
+</div>
+
+<div class="card shadow-sm">
+    <div class="card-body p-4">
+        <form asp-action="Create" method="post">
+            @Html.AntiForgeryToken()
+            <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+            <!-- Personal Information -->
+            <h6 class="text-uppercase text-muted fw-bold mb-3 border-bottom pb-2">Personal Information</h6>
+            <div class="row g-3 mb-4">
+                <div class="col-md-4">
+                    <label asp-for="FirstName" class="form-label fw-semibold"></label>
+                    <input asp-for="FirstName" class="form-control" />
+                    <span asp-validation-for="FirstName" class="text-danger small"></span>
+                </div>
+                <div class="col-md-4">
+                    <label asp-for="LastName" class="form-label fw-semibold"></label>
+                    <input asp-for="LastName" class="form-control" />
+                    <span asp-validation-for="LastName" class="text-danger small"></span>
+                </div>
+                <div class="col-md-4">
+                    <label asp-for="PatientCode" class="form-label fw-semibold">
+                        Patient Code
+                        <small class="text-muted fw-normal">(auto: @ViewBag.SuggestedCode)</small>
+                    </label>
+                    <input asp-for="PatientCode" class="form-control" placeholder="@ViewBag.SuggestedCode" />
+                    <span asp-validation-for="PatientCode" class="text-danger small"></span>
+                </div>
+                <div class="col-md-3">
+                    <label asp-for="DateOfBirth" class="form-label fw-semibold"></label>
+                    <input asp-for="DateOfBirth" class="form-control" type="date" />
+                    <span asp-validation-for="DateOfBirth" class="text-danger small"></span>
+                </div>
+                <div class="col-md-3">
+                    <label asp-for="Gender" class="form-label fw-semibold"></label>
+                    <select asp-for="Gender" class="form-select"
+                            asp-items="Html.GetEnumSelectList<HealthcareCRM.Models.Gender>()">
+                        <option value="">— Select —</option>
+                    </select>
+                    <span asp-validation-for="Gender" class="text-danger small"></span>
+                </div>
+                <div class="col-md-3">
+                    <label asp-for="BloodGroup" class="form-label fw-semibold"></label>
+                    <select asp-for="BloodGroup" class="form-select">
+                        <option value="">— Select —</option>
+                        @foreach (var bg in new[] { "A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-" })
+                        {
+                            <option value="@bg">@bg</option>
+                        }
+                    </select>
+                </div>
+            </div>
+
+            <!-- Contact -->
+            <h6 class="text-uppercase text-muted fw-bold mb-3 border-bottom pb-2">Contact Information</h6>
+            <div class="row g-3 mb-4">
+                <div class="col-md-4">
+                    <label asp-for="PhoneNumber" class="form-label fw-semibold"></label>
+                    <input asp-for="PhoneNumber" class="form-control" placeholder="+92 300 0000000" />
+                    <span asp-validation-for="PhoneNumber" class="text-danger small"></span>
+                </div>
+                <div class="col-md-5">
+                    <label asp-for="Email" class="form-label fw-semibold"></label>
+                    <input asp-for="Email" class="form-control" type="email" />
+                    <span asp-validation-for="Email" class="text-danger small"></span>
+                </div>
+                <div class="col-md-3">
+                    <label asp-for="City" class="form-label fw-semibold"></label>
+                    <input asp-for="City" class="form-control" />
+                </div>
+                <div class="col-12">
+                    <label asp-for="Address" class="form-label fw-semibold"></label>
+                    <input asp-for="Address" class="form-control" />
+                </div>
+            </div>
+
+            <!-- Medical Notes -->
+            <h6 class="text-uppercase text-muted fw-bold mb-3 border-bottom pb-2">Medical Notes</h6>
+            <div class="row g-3 mb-4">
+                <div class="col-md-6">
+                    <label asp-for="Allergies" class="form-label fw-semibold"></label>
+                    <textarea asp-for="Allergies" class="form-control" rows="3"
+                              placeholder="List any known allergies…"></textarea>
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="Notes" class="form-label fw-semibold"></label>
+                    <textarea asp-for="Notes" class="form-control" rows="3"
+                              placeholder="Additional notes…"></textarea>
+                </div>
+            </div>
+
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-primary px-4">
+                    <i class="bi bi-check-circle me-2"></i>Register Patient
+                </button>
+                <a asp-action="Index" class="btn btn-outline-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>

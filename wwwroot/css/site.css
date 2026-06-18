@@ -1,0 +1,60 @@
+/* Healthcare CRM — Custom Styles */
+
+body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background-color: #f8f9fa;
+}
+
+.navbar {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+}
+
+.card {
+    border: none;
+    border-radius: 10px;
+}
+
+.card-header {
+    background-color: #fff;
+    border-bottom: 1px solid #e9ecef;
+    padding: 0.875rem 1.25rem;
+    border-radius: 10px 10px 0 0 !important;
+}
+
+.table th {
+    font-size: 0.78rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: #6c757d;
+    border-top: none;
+}
+
+.table td {
+    vertical-align: middle;
+}
+
+.badge {
+    font-weight: 500;
+    letter-spacing: 0.02em;
+}
+
+/* Stat cards */
+.card .rounded-circle {
+    width: 56px;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+/* Sidebar-style form sections */
+.border-bottom.pb-2 {
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+}
+
+footer.footer {
+    margin-top: 3rem;
+}
