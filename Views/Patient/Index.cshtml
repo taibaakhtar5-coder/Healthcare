@@ -32,28 +32,42 @@
                 <select name="Gender" class="form-select">
                     <option value="">All</option>
                     @foreach (var g in Enum.GetValues<HealthcareCRM.Models.Gender>())
-                    {
-                        <option value="@g" @(Model.Search.Gender == g ? "selected" : "")>@g</option>
-                    }
+{
+    if (Model.Search.Gender == g)
+    {
+        <option value="@g" selected="selected">@g</option>
+    }
+    else
+    {
+        <option value="@g">@g</option>
+    }
+}
                 </select>
             </div>
             <div class="col-md-2">
                 <label class="form-label fw-semibold">Blood Group</label>
                 <select name="BloodGroup" class="form-select">
                     <option value="">All</option>
-                    @foreach (var bg in new[] { "A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-" })
-                    {
-                        <option value="@bg" @(Model.Search.BloodGroup == bg ? "selected" : "")>@bg</option>
-                    }
+                   @foreach (var bg in new[] { "A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-" })
+{
+    if (Model.Search.BloodGroup == bg)
+    {
+        <option value="@bg" selected="selected">@bg</option>
+    }
+    else
+    {
+        <option value="@bg">@bg</option>
+    }
+}
                 </select>
             </div>
             <div class="col-md-2">
                 <label class="form-label fw-semibold">Sort By</label>
                 <select name="SortBy" class="form-select">
-                    <option value="name"         @(Model.Search.SortBy == "name"         ? "selected" : "")>Name A–Z</option>
-                    <option value="name_desc"    @(Model.Search.SortBy == "name_desc"    ? "selected" : "")>Name Z–A</option>
-                    <option value="created_desc" @(Model.Search.SortBy == "created_desc" ? "selected" : "")>Newest First</option>
-                    <option value="dob"          @(Model.Search.SortBy == "dob"          ? "selected" : "")>Age (Youngest)</option>
+                    <option value="name"         selected="@(Model.Search.SortBy == "name"         ? "selected" : null)">Name A–Z</option>
+                    <option value="name_desc"    selected="@(Model.Search.SortBy == "name_desc"    ? "selected" : null)">Name Z–A</option>
+                    <option value="created_desc" selected="@(Model.Search.SortBy == "created_desc" ? "selected" : null)">Newest First</option>
+                    <option value="dob"          selected="@(Model.Search.SortBy == "dob"          ? "selected" : null)">Age (Youngest)</option>
                 </select>
             </div>
             <div class="col-md-1">

@@ -75,8 +75,8 @@ public class PatientCreateViewModel
 // ── Edit ──────────────────────────────────────────────────────────────────────
 public class PatientEditViewModel : PatientCreateViewModel
 {
-    public int    Id          { get; set; }
-    public string PatientCode { get; set; } = string.Empty;  // not editable
+    public int Id { get; set; }
+    public new string PatientCode { get; set; } = string.Empty;  // ← add "new"
 }
 
 // ── Details ───────────────────────────────────────────────────────────────────

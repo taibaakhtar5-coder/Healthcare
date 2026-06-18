@@ -1,4 +1,5 @@
 using HealthcareCRM.Data;
+using HealthcareCRM.Middleware;   // ← add this
 using HealthcareCRM.Models;
 using HealthcareCRM.Services;
 using Microsoft.AspNetCore.Identity;
